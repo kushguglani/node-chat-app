@@ -1,14 +1,31 @@
 const socket = io();
 socket.on('connect',function (){
     console.log("Connected to server");
-    // socket.emit('createMessage',{
-    //     from:'kush',
-    //     text:'thank you so much'
-    // })
 });
 socket.on('disconnect',function (){
     console.log("Disconnected from server");
 });
 socket.on("newMessage",function(message){
+    let newHtml = `<li>${message.from} : ${message.text}`
+    document.querySelector('.chat-model').insertAdjacentHTML('beforeend',newHtml)
     console.log("create Message",message);
 })
+
+function sentMessage(){
+    var text = document.querySelector('#message').value;
+    if(text !==""){
+        socket.emit('createMessage',{
+            from:"user",
+            text
+        });
+    document.querySelector('#message').value ="";
+    }
+}
+
+
+document.querySelector('#submit').addEventListener('click',sentMessage);
+document.onkeypress= function(e){
+    if(e.keyCode ===13) {
+        sentMessage();
+    }
+}

@@ -2,6 +2,9 @@
 const path = require('path');
 const http = require('http');
 
+// user define module
+const message = require('./utils/message');
+
 // 3rd party modules
 const express = require('express');
 const socketIO = require('socket.io');
@@ -24,16 +27,19 @@ app.use((req,res,next)=>{
 
 io.on('connection',(socket)=>{
     console.log("New user connected");
+    socket.emit('newMessage',message.generateMessage('Admin','Welcome to the chat App'))
+    socket.broadcast.emit('newMessage',message.generateMessage('Admin','New user join'))
     socket.on('disconnect',()=>{
         console.log("user is disconnected");
     });
-    socket.on('createMessage',(message)=>{
-        console.log("message from client : ",message);
-          io.emit('newMessage', {
-            from:message.from,
-            text:message.text,
-            createdAt: new Date().getTime()
-        })
+    socket.on('createMessage',(messages)=>{
+        console.log("message from client : ",messages);
+          io.emit('newMessage', message.generateMessage(messages.from,messages.text));
+        // socket.broadcast.emit('newMessage', {
+        //     from:message.from,
+        //     text:message.text,
+        //     createdAt: new Date().getTime()
+        // })
     })
 })
 
