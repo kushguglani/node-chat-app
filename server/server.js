@@ -27,13 +27,13 @@ io.on('connection',(socket)=>{
     socket.on('disconnect',()=>{
         console.log("user is disconnected");
     });
-    socket.emit('newMessage',{
-        from:'kushguglani5@gmail.com',
-        text:"Welcome to my life",
-        createdAt:123456789
-    });
     socket.on('createMessage',(message)=>{
         console.log("message from client : ",message);
+          io.emit('newMessage', {
+            from:message.from,
+            text:message.text,
+            createdAt: new Date().getTime()
+        })
     })
 })
 
