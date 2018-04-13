@@ -29,3 +29,20 @@ document.onkeypress= function(e){
         sentMessage();
     }
 }
+
+let geoBtn = document.querySelector('.send-location');
+geoBtn.addEventListener('click',function(){
+    if(!navigator.geolocation){
+        alert("Geo location no t supported");
+    }
+    navigator.geolocation.getCurrentPosition(function (position){
+        console.log(position);
+        console.log("kush");
+        socket.emit('sendGeoLocation',{
+            latitude:position.coords.latitude,
+            longitude:position.coords.longitude
+        })
+    },function(){
+        alert("unable to fetch");
+    })
+})

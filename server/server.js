@@ -41,6 +41,11 @@ io.on('connection',(socket)=>{
         //     createdAt: new Date().getTime()
         // })
     })
+    
+    socket.on('sendGeoLocation',(coords)=>{
+        console.log(coords);
+        io.emit('newMessage',`${coords.latitude} ,${coords.longitude}`)
+    })
 })
 
 app.use(express.static(publicPath));
