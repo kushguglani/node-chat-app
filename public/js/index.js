@@ -6,9 +6,19 @@ socket.on('disconnect',function (){
     console.log("Disconnected from server");
 });
 socket.on("newMessage",function(message){
-    let newHtml = `<li>${message.from} : ${message.text}`;
-    document.querySelector('.chat-model').insertAdjacentHTML('beforeend',newHtml);
-    console.log("create Message",message);
+    let formattedTime = moment(message.createdAt).format('h:mm:s a');
+    var template = document.querySelector('#message-template').innerHTML;
+    var html = Mustache.render(template,{
+        text:message.text,
+        from:message.from,
+        createdAt:formattedTime
+    });
+    document.querySelector('.chat-model').insertAdjacentHTML('beforeend',html);
+
+    // let formattedTime = moment(message.createdAt).format('h:mm:s a');
+    // let newHtml = `<li>${message.from} ${formattedTime} : ${message.text}`;
+    // document.querySelector('.chat-model').insertAdjacentHTML('beforeend',newHtml);
+    // console.log("create Message",message);
 })
 socket.on("geoLocation",function(location){
     let newHtml = ` <li>${location.from} :<a target="_blank" href=${location.url}>Location</a></li>`;

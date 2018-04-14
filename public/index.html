@@ -23,8 +23,20 @@
         </div>
     </div>    
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/index.js">
-    
+    <script src="/js/lib/moment.js"></script>
+    <script src="/js/lib/mustache.js"></script>
+    <script src="/js/index.js"></script>
+    <script type="text/template" id="message-template">
+        <li class="message">
+            <div class="message_title">
+                <h4>{{from}}</h4>
+                <span>{{createdAt}}</span>
+            </div>
+            <div class="message_body">
+                <p>{{text}}</p>
+            </div>
+
+        </li>
     </script>
 </body>
 

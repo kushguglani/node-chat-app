@@ -8,6 +8,7 @@ const message = require('./utils/message');
 // 3rd party modules
 const express = require('express');
 const socketIO = require('socket.io');
+
 // constant variables
 const app = express();
 const publicPath = path.join(__dirname, '../public');
