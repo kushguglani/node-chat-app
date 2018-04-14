@@ -4,14 +4,24 @@
 <head>
     <title> Chat app </title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./css/ionicons.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+
 </head>
 
 <body>
-    <P> Welcome to the chat servere</p>
-    <ol class="chat-model"></ol>
-        <input type="text" name="name" id="message" placeholder="Enter Messaage">
-        <button id="submit">Send</button>
-        <button class="send-location">Send Location</button>
+    <div class="left-pannel">
+        <h2>PEOPLE</h2>
+    </div>
+    <div class="chat-screen">
+        <ol class="chat-model"></ol>
+        <div class="form">
+            <input type="text" name="name" id="message" placeholder="Enter Messaage" autofocus autocomplete="off">
+            <button id="submit"><i class="ion-ios-paperplane-outline"></i></button>
+            <button class="send-location"><i id="loc-icon" class="ion-ios-location-outline"></i></button>
+        </div>
+    </div>    
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/index.js">
     

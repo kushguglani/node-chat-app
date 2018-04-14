@@ -43,8 +43,7 @@ io.on('connection',(socket)=>{
     })
     
     socket.on('sendGeoLocation',(coords)=>{
-        console.log(coords);
-        io.emit('newMessage',`${coords.latitude} ,${coords.longitude}`)
+        io.emit('geoLocation',message.getLocation('Admin',coords.latitude ,coords.longitude));
     })
 })
 
