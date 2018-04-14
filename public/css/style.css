@@ -38,7 +38,7 @@ ol li{
 }
 .chat-model{
     height: 89vh;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding-bottom: 15px;
 }
 .form {
@@ -74,7 +74,7 @@ button{
     cursor:not-allowed;
 }
 .message{
-    margin-bottom: 5px;
+    margin-bottom: 7px;
 }
 .message_title{
     display: flex;
@@ -87,4 +87,38 @@ button{
 }
 .message_body{
     font-size: 90%;
+}
+.scrollDown{
+    position: absolute;
+    right: 44px;
+    top: -46px;
+    
+    display: none;
+    cursor: pointer;
+}
+.arrowDown{
+    font-size: 120%;
+    width: 31px;
+    font-weight: bolder;
+    color: black;
+    background-color: white;
+    border-radius: 50%;
+    padding: 3px 8px;
+    /* z-index: 999; */
+    position: absolute;
+    right: 8px;
+    top: -2px;
+}
+.scrollDown span{
+    font-size: 77%;
+    position: absolute;
+    background-color: #8BC34A;
+    color: white;
+    width: 20px;
+    padding-left: 6px;
+    border-radius: 50%;
+    margin-bottom: 21px;
+    top: -14px;
+    right: 0px;
+    z-index: 1;
 }

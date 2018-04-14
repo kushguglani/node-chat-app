@@ -1,4 +1,5 @@
 const socket = io();
+var newMessage = 0;
 socket.on('connect',function (){
     console.log("Connected to server");
 });
@@ -14,18 +15,21 @@ socket.on("newMessage",function(message){
         createdAt:formattedTime
     });
     document.querySelector('.chat-model').insertAdjacentHTML('beforeend',html);
-
-    // let formattedTime = moment(message.createdAt).format('h:mm:s a');
-    // let newHtml = `<li>${message.from} ${formattedTime} : ${message.text}`;
-    // document.querySelector('.chat-model').insertAdjacentHTML('beforeend',newHtml);
-    // console.log("create Message",message);
+    newMessageScroll();
 })
 socket.on("geoLocation",function(location){
-    let newHtml = ` <li>${location.from} :<a target="_blank" href=${location.url}>Location</a></li>`;
+    var formattedTime = moment(location.createdAt).format('h:mm:s a');
+    let template = document.querySelector('#location-message-template').innerHTML;
+    var newHtml = Mustache.render(template,{
+        from:location.from,
+        createdAt:formattedTime,
+        location:location.url
+    })
     document.querySelector('.chat-model').insertAdjacentHTML('beforeend',newHtml);
 
 })
 
+// message sent
 function sentMessage(){
     var text = document.querySelector('#message').value;
     if(text !==""){
@@ -37,7 +41,7 @@ function sentMessage(){
     }
 }
 
-
+// send message listener
 document.querySelector('#submit').addEventListener('click',sentMessage);
 document.onkeypress= function(e){
     if(e.keyCode ===13) {
@@ -45,6 +49,8 @@ document.onkeypress= function(e){
     }
 }
 
+
+// add geo location
 let geoBtn = document.querySelector('.send-location');
 let locIcon = document.querySelector('#loc-icon');
 geoBtn.addEventListener('click',function(){
@@ -72,3 +78,61 @@ geoBtn.addEventListener('click',function(){
         alert("unable to fetch");
     })
 })
+//on scroll function
+function messageShow(){
+    var messages = document.querySelector('.chat-model');
+    var message = document.querySelectorAll('.message');
+    var scrollDown = document.querySelector('.scrollDown');
+    var lastmEssage = message[message.length-1];
+    var c =messages.clientHeight;
+    var m =lastmEssage.clientHeight;
+    var t =messages.scrollHeight;
+    var u =messages.scrollTop;
+    if((t-10) > (c+u) ){
+        scrollDown.style.display = 'block';
+    }
+    else{
+        scrollDown.style.display = 'none';    
+        newMessage = 0;
+        document.getElementById('unread-message').style.display = "none";
+        messages.scrollTop =t;
+    }
+}
+
+function scrollToDown(){
+    var messages = document.querySelector('.chat-model');
+    var t =messages.scrollHeight;
+
+}
+
+// scroll down when new message
+
+function newMessageScroll(){
+    var messages = document.querySelector('.chat-model');
+    var message = document.querySelectorAll('.message');
+    var lastmEssage = message[message.length-1];
+    var c =messages.clientHeight;
+    var m =lastmEssage.clientHeight;
+    var t =messages.scrollHeight;
+    var u =messages.scrollTop;
+    var scrollDown =  document.querySelector('.scrollDown');
+    if((t-10) - (c+u) < m){
+        messages.scrollTop =t;
+        newMessage = 0;
+        document.getElementById('unread-message').style.display = "none";
+    }
+    else{
+        newMessage++;
+        document.getElementById('unread-message').style.display = "block";
+        document.getElementById('unread-message').textContent = newMessage;
+        console.log(newMessage);
+    }
+}
+
+// var messages = document.querySelector('.chat-model');
+// var message = document.querySelector('.chat-model').childNodes[0];
+// console.log(message)
+// console.log(messages.clientHeight);
+// // console.log(messages.offsetHeight);
+// console.log(messages.scrollHeight);
+// console.log(message.clientHeight);
