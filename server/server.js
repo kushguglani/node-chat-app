@@ -4,6 +4,8 @@ const http = require('http');
 
 // user define module
 const message = require('./utils/message');
+const {isRealString} = require('./utils/validation');
+const {Users} = require('./utils/users');
 
 // 3rd party modules
 const express = require('express');
@@ -16,6 +18,7 @@ const port = process.env.PORT || 3000;
 const maintainance = false;// make it true when site is on maintainance
 const server = http.createServer(app);//create http server
 const io = socketIO(server);
+const user =  new Users();
 
 // maintainance code
 app.use((req,res,next)=>{
@@ -26,26 +29,43 @@ app.use((req,res,next)=>{
         next();
 })
 
+// connection starts
 io.on('connection',(socket)=>{
-    console.log("New user connected");
-    socket.emit('newMessage',message.generateMessage('Admin','Welcome to the chat App'))
-    socket.broadcast.emit('newMessage',message.generateMessage('Admin','New user join'))
-    socket.on('disconnect',()=>{
-        console.log("user is disconnected");
+    // new user join
+    socket.on('join',(params,callback)=>{
+        if(!isRealString(params.name) || !isRealString(params.room)){
+            callback('Name and room no cant be empty');
+        }
+        socket.join(params.room);
+        user.removeUser(socket.id);
+        user.addUser(socket.id,params.name,params.room);
+        io.to(params.room).emit('updateUserList',user.getUserList(params.room));
+        // admin default mesages
+        socket.broadcast.to(params.room).emit('newMessage',message.generateMessage('Admin',`${params.name} has Joined`));
+        socket.emit('newMessage',message.generateMessage('Admin',`Welcome to the ${params.room} chat Room`));
     });
+    // send message
     socket.on('createMessage',(messages)=>{
-        console.log("message from client : ",messages);
-          io.emit('newMessage', message.generateMessage(messages.from,messages.text));
-        // socket.broadcast.emit('newMessage', {
-        //     from:message.from,
-        //     text:message.text,
-        //     createdAt: new Date().getTime()
-        // })
-    })
+        var user1 = user.fetchUser(socket.id);
+          io.to(user1.room).emit('newMessage', message.generateMessage(user1.name,messages.text));
+
     
-    socket.on('sendGeoLocation',(coords)=>{
-        io.emit('geoLocation',message.getLocation('Admin',coords.latitude ,coords.longitude));
     })
+    //send location 
+    socket.on('sendGeoLocation',(coords)=>{
+        var user1 = user.fetchUser(socket.id);
+        io.to(user1.room).emit('geoLocation',message.getLocation(user1.name,coords.latitude ,coords.longitude));
+    })
+
+
+    // user disconnect 
+    socket.on('disconnect',()=>{
+        var userRemove = user.removeUser(socket.id);
+        if(userRemove){
+            io.to(userRemove.room).emit('updateUserList',user.getUserList(userRemove.room));
+            io.to(userRemove.room).emit('newMessage',message.generateMessage('Admin', `${userRemove.name} has left`));
+        }
+    });
 })
 
 app.use(express.static(publicPath));

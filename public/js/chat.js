@@ -2,6 +2,17 @@ const socket = io();
 var newMessage = 0;
 socket.on('connect',function (){
     console.log("Connected to server");
+    var params = deparam(window.location.search);
+    socket.emit('join',params,function(err){
+        if(err){
+            alert(err);
+            window.location.href='/';
+        }
+        else{
+            console.log("No Error");
+        }
+    });
+    
 });
 socket.on('disconnect',function (){
     console.log("Disconnected from server");
@@ -16,6 +27,17 @@ socket.on("newMessage",function(message){
     });
     document.querySelector('.chat-model').insertAdjacentHTML('beforeend',html);
     newMessageScroll();
+})
+socket.on('updateUserList',function(users){
+    var ol = document.createElement('OL');
+    users.forEach(function(user){
+        var li =document.createElement('LI');
+        var liText = document.createTextNode(user);
+        li.appendChild(liText);
+        ol.appendChild(li);
+    })
+    document.querySelector('.people-list').innerHTML ="";
+    document.querySelector('.people-list').insertAdjacentElement('beforeend',ol);
 })
 socket.on("geoLocation",function(location){
     var formattedTime = moment(location.createdAt).format('h:mm:s a');
@@ -34,7 +56,6 @@ function sentMessage(){
     var text = document.querySelector('#message').value;
     if(text !==""){
         socket.emit('createMessage',{
-            from:"user",
             text
         });
     document.querySelector('#message').value ="";
@@ -101,7 +122,8 @@ function messageShow(){
 
 function scrollToDown(){
     var messages = document.querySelector('.chat-model');
-    var t =messages.scrollHeight;
+    
+    messages.scrollTop =messages.scrollHeight;
 
 }
 
@@ -116,7 +138,9 @@ function newMessageScroll(){
     var t =messages.scrollHeight;
     var u =messages.scrollTop;
     var scrollDown =  document.querySelector('.scrollDown');
-    if((t-10) - (c+u) < m){
+    // console.log((t-10) - (c+u));
+    // console.log(m);
+    if((t-10) - (c+u) < 2*m+10){
         messages.scrollTop =t;
         newMessage = 0;
         document.getElementById('unread-message').style.display = "none";

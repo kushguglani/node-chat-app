@@ -1,60 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <title> Chat app </title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="./css/ionicons.min.css">
-    <link rel="stylesheet" type="text/css" href="./css/style.css">
-
-</head>
-
+<html>
+    <head>
+        <title>Chat Room</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+        <meta charset="urtf-8">
+        <link rel="stylesheet" type="text/css" href="./css/index.css">
 <body>
-    <div class="left-pannel">
-        <h2>PEOPLE</h2>
-    </div>
-    <div class="chat-screen">
-        <ol class="chat-model" onscroll="messageShow()"></ol>
-        
-        <div class="form">
-               <div class="scrollDown"> 
-                   <i class="ion-ios-arrow-down arrowDown" onclick="scrollToDown()"></i>
-                   <span id="unread-message">3</span>
-                </div>
-            <input type="text" name="name" id="message" placeholder="Enter Messaage" autofocus autocomplete="off">
-            <button id="submit"><i class="ion-ios-paperplane-outline"></i></button>
-            <button class="send-location"><i id="loc-icon" class="ion-ios-location-outline"></i></button>
+    <div class="container">
+        <div class="row">
+            <h2>Chat</h2>
+            <form action="./chat.html">
+            <label>Display Name </label><br>
+            <input type="text" id="name" name="name" autofocus><br>
+            <label>Join Room By Name </label><br>
+            <input type="text" id="room" name="room"><br>
+            <button>Join</button>
+            </form>
         </div>
-    </div>    
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/lib/moment.js"></script>
-    <script src="/js/lib/mustache.js"></script>
-    <script src="/js/index.js"></script>
-    <script type="text/template" id="message-template">
-        <li class="message">
-            <div class="message_title">
-                <h4>{{from}}</h4>
-                <span>{{createdAt}}</span>
-            </div>
-            <div class="message_body">
-                <p>{{text}}</p>
-            </div>
-
-        </li>
-    </script>
-    <script type="text/template" id="location-message-template">
-        <li class="message">
-            <div class="message_title">
-                <h4>{{from}}</h4>
-                <span>{{createdAt}}</span>
-            </div>
-            <div class="message_body">
-                <a href="{{location}}" target="_blank">My current location</p>
-            </div>
-
-        </li>
-    </script>
+    </div>
 </body>
-
 </html>
